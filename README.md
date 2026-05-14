@@ -68,6 +68,7 @@ For saving tokens.
 ### Task Management
 
 - [lhl/pi-tasks](https://github.com/lhl/pi-tasks) - my fork of tintinweb/pi-tasks for Claude Code-style task tracking, prompt-queued task execution, batch task creation, dependency management, and a persistent visual widget
+- [lhl/pi-goal](https://github.com/lhl/pi-goal) - my fork of pi-goal for goal/punchlist workflows that interact with `pi-tasks` `TaskList`. Installed via `git:github.com/lhl/pi-goal`.
 
 ### UX
 

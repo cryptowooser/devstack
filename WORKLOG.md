@@ -1198,3 +1198,19 @@ Append-only session log. Each entry records what was done, why, and what's next.
 
 **Next:**
 - Authenticate npm (`npm login` or configure `NPM_TOKEN`) with permission for `@lhl/pi-vertex`, then run `cd projects/pi-vertex && npm publish --access public`.
+
+## 2026-05-15 — Added lhl pi-goal fork to Pi setup
+
+**What:** Updated the default Pi plugin stack to install and document `lhl/pi-goal`.
+
+- Added `git:github.com/lhl/pi-goal` to `pi-packages.json` so `pi-setup.sh` installs it through `tools/pi-sync.sh --prune`.
+- Updated `README.md` Task Management with the pi-goal fork and its punchlist/`TaskList` integration.
+- Updated `wiki/tools/pi-agent.md`, `wiki/index.md`, and `wiki/log.md` so the wiki matches the plugin-stack change.
+- Verified `pi-setup.sh` syntax with `bash -n`.
+
+**Decisions:**
+- Install via the requested `git:github.com/lhl/pi-goal` spec so setup tracks the fork directly.
+- Document pi-goal next to task management because this fork's distinguishing behavior is punchlist/`TaskList` integration.
+
+**Next:**
+- If `lhl/pi-goal` is later published to npm, update `pi-packages.json` and docs from the GitHub git spec to the package spec.

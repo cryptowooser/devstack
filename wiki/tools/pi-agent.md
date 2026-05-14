@@ -11,6 +11,7 @@ links:
   - https://github.com/ArtemisAI/pi-loop
   - https://github.com/tintinweb/pi-schedule-prompt
   - https://github.com/lhl/pi-tasks
+  - https://github.com/lhl/pi-goal
   - https://github.com/lhl/pi-multiloop
   - https://github.com/lhl/pi-multicodex
   - https://github.com/lhl/pi-zentui
@@ -49,6 +50,7 @@ Use this to reconcile a stale machine before trusting its extension list:
 | ~~pi-rtk-optimizer~~ | `npm:pi-rtk-optimizer` | Token optimization via RTK command rewriting + output compaction | ❌ Removed (2026-05-10) — see [[tools/pruning-and-compaction]] |
 | **pi-schedule-prompt** | `npm:pi-schedule-prompt` | Natural language scheduling, cron, per-task model | ✅ Canonical |
 | **pi-tasks** | `https://github.com/lhl/pi-tasks` ([fork](https://github.com/lhl/pi-tasks)) | Claude Code-style task tracking with prompt-queued execution, batch task creation, dependencies, and a persistent widget | ✅ Canonical (lhl fork, switched 2026-05-11) |
+| **pi-goal** | `git:github.com/lhl/pi-goal` ([fork](https://github.com/lhl/pi-goal)) | Goal/punchlist workflow that interacts with `pi-tasks` `TaskList` | ✅ Canonical (lhl fork, added 2026-05-15) |
 | **pi-boomerang** | `npm:pi-boomerang` | Token-efficient autonomous loops — summarize between iterations | ✅ Canonical |
 | **pi-multiloop** | `npm:pi-multiloop` ([source](https://github.com/lhl/pi-multiloop)) | Multi-lane autoloop/autoresearch extension with lane-isolated `.multiloop/` state | ✅ Canonical |
 | **pi-continue** | `git:pi-continue` | Mid-run context compaction with Continuation Ledger | ❌ Disabled (v0.6.0, local) |
@@ -143,6 +145,18 @@ pi install https://github.com/lhl/pi-tasks
 - Added auto-continue-with-prompts setting for picking up the next unblocked task without spawning subagents.
 
 **LLM-callable tools:** `TaskCreate`, `TaskCreateMany`, `TaskList`, `TaskGet`, `TaskUpdate`, `TaskExecute`.
+
+### pi-goal
+
+**Repo:** [lhl/pi-goal](https://github.com/lhl/pi-goal) — fork of [nqh-packages/pi-goal](https://github.com/nqh-packages/pi-goal). Install from the GitHub git spec:
+
+```bash
+pi install git:github.com/lhl/pi-goal
+```
+
+**Key feature:** goal/punchlist workflow integrated with `pi-tasks` `TaskList`, so goal progress can account for structured task work instead of living as a separate loop.
+
+**LLM-callable tools:** `get_goal`, `update_goal`.
 
 ### pi-boomerang
 
@@ -916,7 +930,7 @@ Several extensions provide autonomous loop, autoresearch, or long-running goal c
 |-----------|--------|-------|-------------|
 | [pi-autoresearch](https://github.com/davebcn87/pi-autoresearch) | davebcn87 | Autonomous experiment loop | Runs experiments in loops until goal met |
 | [pi-autoloop](https://github.com/mikeyobrien/pi-autoloop) | mikeyobrien | Autonomous LLM loops | Runs autonomous LLM loops |
-| [pi-goal](https://github.com/nqh-packages/pi-goal) | nqh-packages | Long-running goal mode | Goal-directed agent execution |
+| [pi-goal](https://github.com/lhl/pi-goal) | lhl (fork of nqh-packages) | Goal + punchlist workflow | Goal state integrated with punchlists and `TaskList` |
 | [pi-goal-driven](https://github.com/vurihuang/pi-goal-driven) | vurihuang | Goal-driven master/subagent | Master/subagent orchestration |
 | [ralph-wiggum](https://github.com/tmustier/pi-extensions/tree/main/ralph-wiggum) | tmustier | Iterative development loops | Long-running agent loops for iterative dev |
 | [pi-autoresearch-studio](https://github.com/jhochenbaum/pi-autoresearch-studio) | jhochenbaum | Dashboard for pi-autoresearch | UI for managing autoresearch sessions |
@@ -940,9 +954,9 @@ Runs autonomous LLM loops. Simple, focused implementation for keeping the agent 
 
 #### pi-goal
 
-**Repo:** [nqh-packages/pi-goal](https://github.com/nqh-packages/pi-goal)
+**Repo:** [lhl/pi-goal](https://github.com/lhl/pi-goal) — fork of [nqh-packages/pi-goal](https://github.com/nqh-packages/pi-goal)
 
-Long-running goal mode extension. The agent works toward a defined goal across multiple turns, maintaining context and iterating until completion.
+Installed fork for goal/punchlist workflows that interact with `pi-tasks` `TaskList`. The goal tool surface exposes `get_goal` and `update_goal`; use `update_goal` only to mark the current goal complete when the objective is actually achieved.
 
 #### pi-goal-driven
 
@@ -966,12 +980,12 @@ Part of the tmustier/pi-extensions package. Long-running agent loops for iterati
 | Continuous monitoring loop (time-based) | pi-loop |
 | Simple continuous loop (keep agent running) | pi-autoloop |
 | Research experiments with success conditions | pi-autoresearch |
-| Single goal, many iterations | pi-goal |
+| Single goal/punchlist workflow | lhl/pi-goal |
 | Multi-step tasks with subagent coordination | pi-goal-driven |
 | Iterative code development/refactoring | ralph-wiggum |
 | Full dashboard + workflow for research | pi-autoresearch-studio + pi-autoresearch |
 
-**Avoid installing multiple loop extensions simultaneously** — they may conflict in controlling the agent flow.
+**Avoid letting multiple loop extensions control the same flow simultaneously** — they may conflict in agent-flow control. The default stack installs pi-multiloop and lhl/pi-goal for different workflows; choose one driver per session/task.
 
 ---
 

@@ -6,6 +6,12 @@
 - Documented the workflow in `README.md` and `wiki/tools/pi-agent.md`, including dry-run usage and the rule that canonical plugin changes update the manifest, setup, README, and wiki together.
 - Pages updated: `wiki/tools/pi-agent.md`, `wiki/index.md`.
 
+## [2026-05-15] update | pi-agent — installed lhl pi-goal fork
+- Added `git:github.com/lhl/pi-goal` to the canonical Pi package manifest.
+- Documented the fork as a goal/punchlist workflow that interacts with `pi-tasks` `TaskList`.
+- Pages updated: `wiki/tools/pi-agent.md`, `wiki/index.md`.
+- Repo changes in same logical unit: `pi-packages.json` adds the fork; `README.md` Task Management links to `lhl/pi-goal`; `pi-setup.sh` continues to install through `tools/pi-sync.sh --prune`.
+
 ## [2026-05-12] ingest | Supply chain security playbook and Python secure defaults
 - Source: user-supplied supply-chain security guide, local fish wrapper changes, Socket Mini Shai-Hulud/TanStack report.
 - Pages created: `wiki/practices/supply-chain-security.md`.

@@ -43,6 +43,11 @@
       "note": "lhl fork with prompt-queued execution and batch task creation."
     },
     {
+      "source": "git:github.com/lhl/pi-goal",
+      "category": "task-management",
+      "note": "lhl fork for goal/punchlist workflow integrated with pi-tasks TaskList."
+    },
+    {
       "source": "npm:pi-multiloop",
       "category": "automation",
       "note": "Autoloop/multiloop iteration workflow."
