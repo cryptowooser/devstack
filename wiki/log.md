@@ -6,6 +6,13 @@
 - Documented the workflow in `README.md` and `wiki/tools/pi-agent.md`, including dry-run usage and the rule that canonical plugin changes update the manifest, setup, README, and wiki together.
 - Pages updated: `wiki/tools/pi-agent.md`, `wiki/index.md`.
 
+## [2026-05-15] update | pi-agent — added standalone auto-compaction continue watchdog
+- Added standalone local package `/home/lhl/pi-continue-after-compaction` to the canonical Pi package manifest.
+- Documented the reason-guarded behavior: sends `continue` only after auto-threshold compaction when no next turn starts; manual `/compact` and `/pi-vcc` remain manual.
+- Captured the upgrade-safe implementation strategy: runtime metadata monkeypatch attaches `reason` / `willRetry` to compaction extension events until pi exposes those fields natively.
+- Pages updated: `wiki/tools/pi-agent.md`, `wiki/index.md`.
+- Repo changes in same logical unit: `pi-packages.json` adds the standalone checkout; `pi-setup.sh` preflights the checkout and bootstraps `~/.pi/agent/continue-after-compaction.json`; `README.md` documents the extension under Context Management.
+
 ## [2026-05-15] update | pi-agent — installed lhl pi-goal fork
 - Added `git:github.com/lhl/pi-goal` to the canonical Pi package manifest.
 - Documented the fork as a goal/punchlist workflow that interacts with `pi-tasks` `TaskList`.

@@ -64,6 +64,7 @@ Use this to reconcile a stale machine before trusting its extension list:
 | **pi-skill-dollar** | `npm:pi-skill-dollar` ([source](https://github.com/lhl/pi-skill-dollar)) | `$` autocomplete shortcut for skill suggestions in the input area | ✅ Canonical |
 | **pi-vertex** | `npm:@lhl/pi-vertex` ([source](https://github.com/lhl/pi-vertex)) | Google Vertex AI provider — Gemini, Claude, Llama, DeepSeek, Qwen, Mistral, and 20+ other MaaS models | ✅ Canonical |
 | **pi-vcc** | `npm:@sting8k/pi-vcc` ([source](https://github.com/sting8k/pi-vcc)) | Zero-LLM algorithmic session compaction override with `vcc_recall` | ✅ Canonical |
+| **pi-continue-after-compaction** | `/home/lhl/pi-continue-after-compaction` | Standalone local watchdog that sends `continue` only after auto-threshold compaction if no next turn starts | ✅ Canonical local checkout (added 2026-05-15) |
 | **pi-codex-fast** | `npm:@calesennett/pi-codex-fast` ([source](https://github.com/calesennett/pi-codex-fast)) | Optional OpenAI/OpenAI Codex priority service-tier toggle (`service_tier: "priority"`) | 🧪 Evaluation only; pruned by canonical sync |
 | **pi-live-terminal** | `npm:pi-live-terminal` ([source](https://github.com/tanishqkancharla/pi-live-terminal)) | tmux-based live terminal widget for interactive/long-running commands | ⚪ Optional; not in canonical manifest |
 | **pi-codex-conversion** | `npm:@howaboua/pi-codex-conversion` ([source](https://github.com/IgorWarzocha/pi-codex-conversion)) | Codex-oriented adapter: tool-swap, WS/SSE dual transport, native Codex web_search/image_generation | 📋 Evaluated (not installed) |
@@ -421,6 +422,7 @@ Pi has built-in auto-compaction (enabled by default, triggers at `contextWindow 
 | Extension | Approach | Status |
 |---|---|---|
 | **@sting8k/pi-vcc** | Algorithmic, no LLM calls | ✅ Installed (override) |
+| **pi-continue-after-compaction** | Auto-threshold compaction watchdog; sends guarded `continue` if no turn restarts | ✅ Canonical local checkout |
 | **pi-boomerang** | Context collapse after autonomous task runs | ✅ Installed |
 | **pi-continue** | Mid-run guard + Continuation Ledger | ❌ Removed (2026-05-05) |
 | **pi-grounded-compaction** | Custom summary prompt + model presets + files-touched grounding | Evaluated (below) |
@@ -490,6 +492,34 @@ pi install npm:@sting8k/pi-vcc
 ```
 
 With `overrideDefaultCompaction: true`, pi-vcc handles `/compact`, auto-threshold compaction, and the new `/pi-vcc` / `/pi-vcc-recall` slash commands. To search prior history after compaction, use `vcc_recall({ query: "…" })` or `/pi-vcc-recall …`.
+
+### pi-continue-after-compaction (Canonical Local Checkout)
+
+**Package:** `/home/lhl/pi-continue-after-compaction` (displayed as `~/pi-continue-after-compaction` in user docs)
+
+Local extension added 2026-05-15 to handle a practical pi-vcc edge case: after auto-threshold compaction, pi sometimes returns to idle instead of starting the next turn. The extension watches `session_compact` events and sends an extension-originated `continue` only when all guards pass:
+
+- `event.reason === "threshold"` — auto-threshold compaction only.
+- `event.willRetry` is false — overflow compaction already has core retry behavior.
+- No pending steering/follow-up messages are waiting.
+- No `agent_start` / `turn_start` happened during the watchdog delay.
+- The session leaf is still the compaction entry, so user/manual activity did not move the session forward.
+
+Manual `/compact` and `/pi-vcc` are deliberately ignored. Current pi does not expose compaction reason to extension events, so the package monkeypatches runtime metadata rather than editing installed pi files: it wraps `AgentSession.compact(...)`, `AgentSession._runAutoCompaction(reason, willRetry)`, and `ExtensionRunner.emit(...)` to attach `reason` / `willRetry` to `session_before_compact` and `session_compact` when pi has not provided those fields itself. If upstream later exposes these fields, the extension preserves native event values and the monkeypatch can be retired.
+
+Config: `~/.pi/agent/continue-after-compaction.json`
+
+```json
+{
+  "enabled": true,
+  "delayMs": 1500,
+  "prompt": "continue",
+  "requirePiVcc": false,
+  "debug": false
+}
+```
+
+`requirePiVcc: true` narrows the watchdog to compaction entries with `details.compactor === "pi-vcc"`.
 
 ### pi-grounded-compaction (Evaluated, Not Installed)
 

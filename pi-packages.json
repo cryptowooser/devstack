@@ -63,6 +63,11 @@
       "note": "Algorithmic context compaction override."
     },
     {
+      "source": "/home/lhl/pi-continue-after-compaction",
+      "category": "context-management",
+      "note": "Local auto-threshold compaction continue watchdog."
+    },
+    {
       "source": "npm:pi-codex-status",
       "category": "ux",
       "note": "Codex status/statusline integration."

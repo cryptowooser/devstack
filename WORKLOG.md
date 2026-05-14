@@ -1214,3 +1214,23 @@ Append-only session log. Each entry records what was done, why, and what's next.
 
 **Next:**
 - If `lhl/pi-goal` is later published to npm, update `pi-packages.json` and docs from the GitHub git spec to the package spec.
+
+## 2026-05-15 — Added standalone auto-compaction continue watchdog
+
+**What:** Created and installed a standalone local Pi extension that continues after auto-threshold compaction only when the agent appears stuck.
+
+- Moved the package out of devstack to `~/pi-continue-after-compaction/` and initialized it as its own git repository.
+- Implemented runtime compaction-reason tagging without editing installed Pi: wraps `AgentSession.compact(...)`, `AgentSession._runAutoCompaction(reason, willRetry)`, and `ExtensionRunner.emit(...)` to expose `reason` / `willRetry` on compaction extension events when Pi does not provide them natively.
+- Added guarded continue behavior: only `reason === "threshold"`, no core retry, no pending messages, no later `agent_start`/`turn_start`, and unchanged session leaf after the watchdog delay.
+- Added `/home/lhl/pi-continue-after-compaction` to `pi-packages.json`; `pi-setup.sh` now preflights the standalone checkout and bootstraps `~/.pi/agent/continue-after-compaction.json`.
+- Updated `README.md`, `wiki/tools/pi-agent.md`, `wiki/index.md`, and `wiki/log.md` to document the plugin-stack change without checking the extension source into devstack.
+- Verified with `bash -n pi-setup.sh`, `node --check`, package tests, package dry-run, and an extension-load smoke test.
+
+**Decisions:**
+- Use an extension-local monkeypatch rather than editing Pi core so normal `pi update` remains available.
+- Keep manual `/compact` and `/pi-vcc` manual by requiring auto-threshold `reason` before scheduling `continue`.
+- Keep the extension source in `~/pi-continue-after-compaction` as a separate project rather than under `devstack/projects/`.
+- Default `requirePiVcc` to `false` so the watchdog applies to any auto-threshold compactor; the config can narrow it to pi-vcc if needed.
+
+**Next:**
+- Consider an upstream Pi PR to expose `reason` and `willRetry` on `session_before_compact` / `session_compact`, which would let this extension drop the private-method reason monkeypatch.
