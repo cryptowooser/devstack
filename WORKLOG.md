@@ -1152,3 +1152,17 @@ Append-only session log. Each entry records what was done, why, and what's next.
 
 **Next:**
 - Run `./tools/pi-sync.sh --dry-run --prune --no-update` on each machine before applying `./tools/pi-sync.sh --prune`.
+
+## 2026-05-20 — Fixed pi sync path-prune convergence
+
+**What:** Fixed `tools/pi-sync.sh --prune` so stale local/path installs are actually removed from pi settings.
+
+- Reproduced `pi remove ../../github/lhl/pi-zentui` failing because pi normalizes local/path sources relative to different base directories.
+- Updated `tools/pi-sync.sh` to prune user and project package settings directly before installing canonical sources.
+- Re-ran `./tools/pi-sync.sh --prune`; `pi list` now matches `pi-packages.json` and has no project-local packages.
+
+**Decisions:**
+- Treat settings convergence as the primary prune guarantee; direct settings reconciliation is more reliable than `pi remove` for stale relative path entries.
+
+**Next:**
+- Push the new commits so other machines can `git pull --ff-only` and run `./tools/pi-sync.sh --prune`.

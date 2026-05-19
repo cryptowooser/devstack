@@ -154,10 +154,16 @@ function normalizeRemoval(entry, index, sourceName) {
   return [{ source: entry.source, scope }];
 }
 
+function packageSource(entry) {
+  if (typeof entry === 'string') return entry;
+  if (entry && typeof entry === 'object' && typeof entry.source === 'string') return entry.source;
+  return undefined;
+}
+
 function settingsPackages(filePath) {
   const settings = readJson(filePath, {});
   if (!Array.isArray(settings.packages)) return [];
-  return settings.packages.filter((source) => typeof source === 'string' && source.length > 0);
+  return settings.packages.map(packageSource).filter((source) => typeof source === 'string' && source.length > 0);
 }
 
 function writeList(name, values) {
@@ -302,15 +308,61 @@ print_list "Project-local packages to remove" "$TMP_DIR/remove-local.txt"
 print_list "User packages to install" "$TMP_DIR/install-user.txt"
 print_list "Project-local packages to install" "$TMP_DIR/install-local.txt"
 
-while IFS= read -r source || [ -n "$source" ]; do
-  [ -z "$source" ] && continue
-  run_pi remove "$source"
-done < "$TMP_DIR/remove-user.txt"
+prune_settings() {
+  scope="$1"
+  settings_file="$2"
+  remove_file="$3"
+  if [ ! -s "$remove_file" ]; then
+    return
+  fi
 
-while IFS= read -r source || [ -n "$source" ]; do
-  [ -z "$source" ] && continue
-  run_pi remove "$source" -l
-done < "$TMP_DIR/remove-local.txt"
+  if [ "$DRY_RUN" = true ]; then
+    printf '+ prune %s settings %q remove:\n' "$scope" "$settings_file"
+    sed 's/^/  - /' "$remove_file"
+    return
+  fi
+
+  node - "$settings_file" "$remove_file" <<'NODE'
+const fs = require('fs');
+const path = require('path');
+
+const [settingsPath, removePath] = process.argv.slice(2);
+const removals = new Set(fs.readFileSync(removePath, 'utf8').split(/\r?\n/).filter(Boolean));
+
+function readSettings(filePath) {
+  try {
+    return JSON.parse(fs.readFileSync(filePath, 'utf8'));
+  } catch (error) {
+    if (error && error.code === 'ENOENT') return {};
+    throw error;
+  }
+}
+
+function packageSource(entry) {
+  if (typeof entry === 'string') return entry;
+  if (entry && typeof entry === 'object' && typeof entry.source === 'string') return entry.source;
+  return undefined;
+}
+
+const settings = readSettings(settingsPath);
+const packages = Array.isArray(settings.packages) ? settings.packages : [];
+const nextPackages = packages.filter((entry) => !removals.has(packageSource(entry)));
+
+if (nextPackages.length !== packages.length) {
+  settings.packages = nextPackages;
+  fs.mkdirSync(path.dirname(settingsPath), { recursive: true });
+  fs.writeFileSync(settingsPath, `${JSON.stringify(settings, null, 2)}\n`);
+}
+NODE
+}
+
+# Prune settings directly instead of delegating to `pi remove`. pi normalizes
+# local/path sources relative to different base directories, so stale path installs
+# can fail to match and abort the sync. Direct settings reconciliation guarantees
+# `pi list` converges to the manifest; package install/update below handles the
+# canonical sources.
+prune_settings "user" "$USER_SETTINGS" "$TMP_DIR/remove-user.txt"
+prune_settings "project-local" "$LOCAL_SETTINGS" "$TMP_DIR/remove-local.txt"
 
 while IFS= read -r source || [ -n "$source" ]; do
   [ -z "$source" ] && continue
