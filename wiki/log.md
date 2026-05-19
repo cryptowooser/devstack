@@ -1,5 +1,11 @@
 # Wiki Log
 
+## [2026-05-20] update | pi-agent — canonical package manifest and sync script
+- Added `pi-packages.json` as the canonical pi extension manifest and `tools/pi-sync.sh --prune` as the reconciliation path for stale machines, local path installs, and evaluation packages.
+- Updated `pi-setup.sh` to call the sync script so new and existing machines share the same package workflow.
+- Documented the workflow in `README.md` and `wiki/tools/pi-agent.md`, including dry-run usage and the rule that canonical plugin changes update the manifest, setup, README, and wiki together.
+- Pages updated: `wiki/tools/pi-agent.md`, `wiki/index.md`.
+
 ## [2026-05-12] ingest | Supply chain security playbook and Python secure defaults
 - Source: user-supplied supply-chain security guide, local fish wrapper changes, Socket Mini Shai-Hulud/TanStack report.
 - Pages created: `wiki/practices/supply-chain-security.md`.

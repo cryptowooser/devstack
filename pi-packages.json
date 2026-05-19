@@ -1,0 +1,87 @@
+{
+  "schemaVersion": 1,
+  "description": "Canonical pi extension stack for lhl/devstack. tools/pi-sync.sh installs these sources; --prune removes any other user/project package entries.",
+  "packages": [
+    {
+      "source": "npm:pi-context-prune",
+      "category": "context-management",
+      "note": "Recoverable conversation pruning with context_tree_query."
+    },
+    {
+      "source": "npm:pi-schedule-prompt",
+      "category": "automation",
+      "note": "Cron/one-shot prompt scheduling."
+    },
+    {
+      "source": "npm:pi-boomerang",
+      "category": "automation",
+      "note": "Subagent/background prompt workflows."
+    },
+    {
+      "source": "npm:pi-web-access",
+      "category": "web-access",
+      "note": "Search, fetch, video/GitHub/PDF extraction."
+    },
+    {
+      "source": "npm:pi-smart-fetch",
+      "category": "web-access",
+      "note": "Browser-like TLS fetching and readable extraction."
+    },
+    {
+      "source": "npm:@the-forge-flow/camoufox-pi@0.2.1",
+      "category": "web-access",
+      "note": "Pinned stealth Firefox/Camoufox web tools."
+    },
+    {
+      "source": "npm:pi-code-previews",
+      "category": "ux",
+      "note": "Code preview UX."
+    },
+    {
+      "source": "https://github.com/lhl/pi-tasks",
+      "category": "task-management",
+      "note": "lhl fork with prompt-queued execution and batch task creation."
+    },
+    {
+      "source": "npm:pi-multiloop",
+      "category": "automation",
+      "note": "Autoloop/multiloop iteration workflow."
+    },
+    {
+      "source": "npm:@lhl/pi-vertex",
+      "category": "providers",
+      "note": "Google Vertex AI provider."
+    },
+    {
+      "source": "npm:@sting8k/pi-vcc",
+      "category": "context-management",
+      "note": "Algorithmic context compaction override."
+    },
+    {
+      "source": "npm:pi-codex-status",
+      "category": "ux",
+      "note": "Codex status/statusline integration."
+    },
+    {
+      "source": "https://github.com/lhl/pi-multicodex",
+      "category": "automation",
+      "note": "Multi-Codex workflow tooling."
+    },
+    {
+      "source": "npm:pi-skill-dollar",
+      "category": "skills",
+      "note": "Dollar-triggered skill/tool helper."
+    },
+    {
+      "source": "https://github.com/lhl/pi-zentui",
+      "category": "ux",
+      "note": "lhl UI/TUI customization."
+    }
+  ],
+  "legacyPackages": [
+    {
+      "source": "npm:@tintinweb/pi-tasks",
+      "reason": "Legacy upstream task package; replaced by https://github.com/lhl/pi-tasks."
+    }
+  ]
+}

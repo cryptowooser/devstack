@@ -1134,3 +1134,21 @@ Append-only session log. Each entry records what was done, why, and what's next.
 
 **Next:**
 - If the fork is later renamed or published under an `@lhl`/`lhl` npm package, update `pi-setup.sh` and docs from GitHub URL to the package spec.
+
+## 2026-05-20 — Added canonical pi package sync workflow
+
+**What:** Added a manifest-driven pi extension sync path for keeping multiple devstack machines aligned.
+
+- Added `pi-packages.json` as the canonical pi package manifest.
+- Added `tools/pi-sync.sh` with `--prune`, `--dry-run`, `--no-update`, and `--manifest` options.
+- Updated `pi-setup.sh` to call `tools/pi-sync.sh --prune` instead of maintaining a separate hand-written install list.
+- Updated `README.md` with the canonical manifest workflow and dry-run command.
+- Updated `wiki/tools/pi-agent.md`, `wiki/index.md`, and `wiki/log.md` to document the sync workflow and canonical/optional extension status.
+
+**Decisions:**
+- Use `pi-packages.json` as the source of truth rather than duplicating install commands across docs and setup.
+- Make `--prune` remove non-canonical user and project-local package entries so local path installs, old plugins, and evaluation packages do not silently persist across machines.
+- Keep `pi-packages.json` rolling for most packages, with an explicit pin for `npm:@the-forge-flow/camoufox-pi@0.2.1`.
+
+**Next:**
+- Run `./tools/pi-sync.sh --dry-run --prune --no-update` on each machine before applying `./tools/pi-sync.sh --prune`.

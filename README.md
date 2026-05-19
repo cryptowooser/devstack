@@ -14,6 +14,12 @@ cd devstack
 ./pi-setup.sh
 ```
 
+The canonical extension list lives in [`pi-packages.json`](pi-packages.json). `pi-setup.sh` calls [`tools/pi-sync.sh`](tools/pi-sync.sh) with `--prune`, so a fresh or stale machine removes old/local/evaluation plugins that are not in the manifest, installs the blessed stack, and then runs `pi update --extensions`. To inspect before changing a machine:
+
+```bash
+./tools/pi-sync.sh --dry-run --prune --no-update
+```
+
 ## Why Pi Is Neat
 
 - **extensibility**: it's not *just* open source (Codex and OpenCode are too) — pi is expressly designed to be easily customized. anything you don't like? tell pi to change itself. Almost everything can be refreshed with `/reload` without a restart — see my list for how w/ minimal yak-shaving, you can customize something to be *very* specific to your preferences

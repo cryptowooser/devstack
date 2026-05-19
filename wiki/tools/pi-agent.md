@@ -11,6 +11,10 @@ links:
   - https://github.com/ArtemisAI/pi-loop
   - https://github.com/tintinweb/pi-schedule-prompt
   - https://github.com/lhl/pi-tasks
+  - https://github.com/lhl/pi-multiloop
+  - https://github.com/lhl/pi-multicodex
+  - https://github.com/lhl/pi-zentui
+  - https://github.com/lhl/pi-skill-dollar
   - https://github.com/Tiziano-AI/pi-continue
   - https://github.com/nicobailon/pi-web-access
   - https://github.com/Thinkscape/agent-smart-fetch
@@ -24,63 +28,47 @@ links:
 
 Pi (pi.dev) is a minimal, extensible terminal coding harness by Mario Zechner (badlogic/Earendil Inc). It provides a lean foundation — 4 default tools, no built-in MCP, no plan mode, no permission system — with the philosophy that users build what they need via extensions.
 
+## Canonical Package Sync
+
+`pi-packages.json` is the source of truth for this devstack's pi extension stack. `tools/pi-sync.sh --prune` reads that manifest, removes user/project package entries that are not canonical, installs anything missing, and then runs `pi update --extensions`.
+
+Use this to reconcile a stale machine before trusting its extension list:
+
+```bash
+./tools/pi-sync.sh --dry-run --prune --no-update  # inspect planned removals/installs
+./tools/pi-sync.sh --prune                         # apply canonical stack
+```
+
+`pi-setup.sh` calls `tools/pi-sync.sh --prune`, so new machines and existing machines use the same reconciliation path. Local path installs and evaluation packages should stay temporary; if one becomes canonical, add it to `pi-packages.json` and update `README.md`, this page, and `pi-setup.sh` in the same logical unit.
+
 ## Installed Extensions
 
-| Extension | npm | Purpose | Status |
+| Extension | Install source | Purpose | Status |
 |---|---|---|---|
-| **pi-context-prune** | `npm:pi-context-prune` ([source](https://github.com/championswimmer/pi-context-prune)) | Summarizes completed tool-call batches; prunes originals from future LLM context with `context_tree_query` recovery | ✅ Installed (v0.9.1, replaced pi-rtk-optimizer 2026-05-10) |
+| **pi-context-prune** | `npm:pi-context-prune` ([source](https://github.com/championswimmer/pi-context-prune)) | Summarizes completed tool-call batches; prunes originals from future LLM context with `context_tree_query` recovery | ✅ Canonical (replaced pi-rtk-optimizer 2026-05-10) |
 | ~~pi-rtk-optimizer~~ | `npm:pi-rtk-optimizer` | Token optimization via RTK command rewriting + output compaction | ❌ Removed (2026-05-10) — see [[tools/pruning-and-compaction]] |
-| **pi-schedule-prompt** | `npm:pi-schedule-prompt` | Natural language scheduling, cron, per-task model | ✅ Installed |
-| **pi-tasks** | `https://github.com/lhl/pi-tasks` ([fork](https://github.com/lhl/pi-tasks)) | Claude Code-style task tracking with prompt-queued execution, batch task creation, dependencies, and a persistent widget | ✅ Installed (lhl fork, switched 2026-05-11) |
-| **pi-boomerang** | `npm:pi-boomerang` | Token-efficient autonomous loops — summarize between iterations | ✅ Installed |
-| **pi-multiloop** | `/home/lhl/pi-multiloop` ([source](https://github.com/lhl/pi-multiloop), npm: `pi-multiloop`) | Multi-lane autoloop/autoresearch extension with lane-isolated `.multiloop/` state | 🧪 Local test (post-v0.1.1 compaction-aware resume) |
+| **pi-schedule-prompt** | `npm:pi-schedule-prompt` | Natural language scheduling, cron, per-task model | ✅ Canonical |
+| **pi-tasks** | `https://github.com/lhl/pi-tasks` ([fork](https://github.com/lhl/pi-tasks)) | Claude Code-style task tracking with prompt-queued execution, batch task creation, dependencies, and a persistent widget | ✅ Canonical (lhl fork, switched 2026-05-11) |
+| **pi-boomerang** | `npm:pi-boomerang` | Token-efficient autonomous loops — summarize between iterations | ✅ Canonical |
+| **pi-multiloop** | `npm:pi-multiloop` ([source](https://github.com/lhl/pi-multiloop)) | Multi-lane autoloop/autoresearch extension with lane-isolated `.multiloop/` state | ✅ Canonical |
 | **pi-continue** | `git:pi-continue` | Mid-run context compaction with Continuation Ledger | ❌ Disabled (v0.6.0, local) |
-| **pi-code-previews** | `git:pi-code-previews` | Shiki syntax-highlighted tool output rendering in TUI | ✅ Installed (v0.1.14, local) |
-| **pi-web-access** | `npm:pi-web-access` | Web search, content extraction, video/YT understanding, GitHub cloning, PDF | ✅ Installed (v0.10.7) |
-| **pi-smart-fetch** | `npm:pi-smart-fetch` | Browser-like TLS fingerprints + Defuddle extraction for bot-defended pages | ✅ Installed (v0.2.35) |
-| **camoufox-pi** | `npm:@the-forge-flow/camoufox-pi` | Stealth web access via Camoufox (C++-level anti-fingerprinting Firefox fork) | ✅ Installed (v0.2.1) |
-| **pi-zentui** | `npm:pi-zentui` | Starship-inspired status line + Opencode-style TUI (footer with git/runtime, bordered editor, accent rail) | ✅ Installed (v0.1.2) |
-| **pi-codex-status** | `npm:pi-codex-status` ([source](https://github.com/lhl/pi-codex-status)) | ChatGPT Codex quota/status CLI + `/status` extension (5h, weekly, credits, JSON/statusline export) | ✅ Installed (v0.1.0) |
-| **pi-multicodex** | `npm:@victor-software-house/pi-multicodex` | Automatic ChatGPT Codex account rotation on quota/rate limits | ✅ Installed (v2.3.1) |
-| **pi-codex-fast** | `npm:@calesennett/pi-codex-fast` ([source](https://github.com/calesennett/pi-codex-fast)) | Optional OpenAI/OpenAI Codex priority service-tier toggle (`service_tier: "priority"`) | 🧪 Local evaluation; not in default `pi-setup.sh` |
-| **pi-live-terminal** | `npm:pi-live-terminal` ([source](https://github.com/tanishqkancharla/pi-live-terminal)) | tmux-based live terminal widget for interactive/long-running commands | ✅ Installed (v0.2.0) |
-| **pi-vertex** | `npm:@lhl/pi-vertex` ([source](https://github.com/lhl/pi-vertex)) | Google Vertex AI provider — Gemini, Claude, Llama, DeepSeek, Qwen, Mistral, and 20+ other MaaS models | ✅ Installed (v1.1.8, forked from ssweens) |
+| **pi-code-previews** | `npm:pi-code-previews` ([source](https://github.com/mattleong/pi-code-previews)) | Shiki syntax-highlighted tool output rendering in TUI | ✅ Canonical |
+| **pi-web-access** | `npm:pi-web-access` | Web search, content extraction, video/YT understanding, GitHub cloning, PDF | ✅ Canonical |
+| **pi-smart-fetch** | `npm:pi-smart-fetch` | Browser-like TLS fingerprints + Defuddle extraction for bot-defended pages | ✅ Canonical |
+| **camoufox-pi** | `npm:@the-forge-flow/camoufox-pi@0.2.1` | Stealth web access via Camoufox (C++-level anti-fingerprinting Firefox fork) | ✅ Canonical (pinned v0.2.1) |
+| **pi-zentui** | `https://github.com/lhl/pi-zentui` | Starship-inspired status line + Opencode-style TUI (footer with git/runtime, bordered editor, accent rail) | ✅ Canonical (lhl fork) |
+| **pi-codex-status** | `npm:pi-codex-status` ([source](https://github.com/lhl/pi-codex-status)) | ChatGPT Codex quota/status CLI + `/status` extension (5h, weekly, credits, JSON/statusline export) | ✅ Canonical |
+| **pi-multicodex** | `https://github.com/lhl/pi-multicodex` | Automatic ChatGPT Codex account rotation on quota/rate limits | ✅ Canonical (lhl fork of Victor implementation) |
+| **pi-skill-dollar** | `npm:pi-skill-dollar` ([source](https://github.com/lhl/pi-skill-dollar)) | `$` autocomplete shortcut for skill suggestions in the input area | ✅ Canonical |
+| **pi-vertex** | `npm:@lhl/pi-vertex` ([source](https://github.com/lhl/pi-vertex)) | Google Vertex AI provider — Gemini, Claude, Llama, DeepSeek, Qwen, Mistral, and 20+ other MaaS models | ✅ Canonical |
+| **pi-vcc** | `npm:@sting8k/pi-vcc` ([source](https://github.com/sting8k/pi-vcc)) | Zero-LLM algorithmic session compaction override with `vcc_recall` | ✅ Canonical |
+| **pi-codex-fast** | `npm:@calesennett/pi-codex-fast` ([source](https://github.com/calesennett/pi-codex-fast)) | Optional OpenAI/OpenAI Codex priority service-tier toggle (`service_tier: "priority"`) | 🧪 Evaluation only; pruned by canonical sync |
+| **pi-live-terminal** | `npm:pi-live-terminal` ([source](https://github.com/tanishqkancharla/pi-live-terminal)) | tmux-based live terminal widget for interactive/long-running commands | ⚪ Optional; not in canonical manifest |
 | **pi-codex-conversion** | `npm:@howaboua/pi-codex-conversion` ([source](https://github.com/IgorWarzocha/pi-codex-conversion)) | Codex-oriented adapter: tool-swap, WS/SSE dual transport, native Codex web_search/image_generation | 📋 Evaluated (not installed) |
 
-**Install commands:**
+**Canonical install/sync command:**
 ```bash
-pi install npm:pi-schedule-prompt
-
-# pi-continue and pi-code-previews installed from local git clones due to npm 11 peer-dep issue:
-# git clone https://github.com/Tiziano-AI/pi-continue .pi/git/pi-continue
-# git clone https://github.com/mattleong/pi-code-previews .pi/git/pi-code-previews
-# pi install -l .pi/git/pi-continue
-# pi install -l .pi/git/pi-code-previews
-# pi install -l does NOT run npm install — must install deps manually:
-# (cd .pi/git/pi-continue && npm install)
-# (cd .pi/git/pi-code-previews && npm install)
-
-# Autoloop / workflow
-pi install /home/lhl/pi-multiloop
-
-# Task management
-pi remove npm:@tintinweb/pi-tasks 2>/dev/null || true
-pi install https://github.com/lhl/pi-tasks
-
-# Web fetch & search
-pi install npm:pi-web-access
-pi install npm:pi-smart-fetch
-pi install npm:@the-forge-flow/camoufox-pi
-
-# Status bar
-pi install npm:pi-zentui
-
-# Codex quota/status
-pi install npm:pi-codex-status
-pi install npm:@victor-software-house/pi-multicodex
-
-# Live terminal widget (tmux required)
-pi install npm:pi-live-terminal
+./tools/pi-sync.sh --prune
 
 # camoufox-pi also needs its ~500MB browser binary (one-time):
 # npx camoufox fetch && chmod -R 755 ~/.cache/camoufox/
@@ -177,11 +165,11 @@ pi install https://github.com/lhl/pi-tasks
 
 **Key feature:** Replaces full turn history with compact handoff summary — same outcome, fraction of tokens. Good for 15+ iteration runs.
 
-### pi-live-terminal
+### pi-live-terminal (Optional, Not Canonical)
 
 **Repo:** [tanishqkancharla/pi-live-terminal](https://github.com/tanishqkancharla/pi-live-terminal) | **npm:** `npm:pi-live-terminal` | v0.2.0
 
-Runs interactive or long-running commands in detached tmux sessions with a live widget above the pi editor. Survives pi restarts (reattaches automatically).
+Runs interactive or long-running commands in detached tmux sessions with a live widget above the pi editor. It is useful, but it is not in `pi-packages.json`; `tools/pi-sync.sh --prune` will remove it unless we promote it to the canonical stack. Survives pi restarts (reattaches automatically).
 
 **Commands:**
 ```
@@ -245,7 +233,7 @@ Then `/reload` inside pi.
 
 #### Implementation Comparison: kim0 vs Victor
 
-Two implementations of `pi-multicodex` exist. We have switched to the **Victor (victor-software-house)** version as it represents a significant modular evolution of the concept.
+Two implementations of `pi-multicodex` exist. The canonical install source is now [`https://github.com/lhl/pi-multicodex`](https://github.com/lhl/pi-multicodex), our fork of the **Victor (victor-software-house)** version, because it represents a significant modular evolution of the concept and lets us carry local fixes without path installs.
 
 | Feature | kim0 (v1.0.2) | Victor (v2.3.1) |
 | :--- | :--- | :--- |
@@ -721,7 +709,7 @@ We use **pi-zentui** for the status line and editor styling.
 
 ### pi-zentui (Installed)
 
-**Repo:** [lmilojevicc/pi-zentui](https://github.com/lmilojevicc/pi-zentui) | **npm:** `npm:pi-zentui` | v0.1.2
+**Repo:** [lhl/pi-zentui](https://github.com/lhl/pi-zentui) (fork of [lmilojevicc/pi-zentui](https://github.com/lmilojevicc/pi-zentui)) | **canonical install:** `https://github.com/lhl/pi-zentui`
 
 Starship-inspired footer + Opencode-style TUI for pi.
 
@@ -740,11 +728,11 @@ Starship-inspired footer + Opencode-style TUI for pi.
 
 **Status Icons:** `!` modified, `?` untracked, `+` staged, `✘` deleted, `»` renamed, `$` stashed, `↑` ahead, `↓` behind, `⇕` diverged
 
-**Install:** `pi install npm:pi-zentui` (config at `~/.pi/agent/zentui.json`)
+**Install:** managed by `pi-packages.json` / `tools/pi-sync.sh --prune` from `https://github.com/lhl/pi-zentui` (config at `~/.pi/agent/zentui.json`)
 
 ### Local Customizations
 
-The extension source was modified locally to fix crashes and tailor the UI. Changes are in the pi-zentui extension directory at `~/.pi/agent/extensions/pi-zentui/`.
+The extension source was originally modified locally to fix crashes and tailor the UI. Those changes are now carried in the canonical `lhl/pi-zentui` fork so `tools/pi-sync.sh --prune` can install the same UI on every machine without relying on local path installs.
 
 **Extension source (code fixes + UI changes):**
 

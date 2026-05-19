@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 set -e
 
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
 # Install rtk (token-optimizing CLI proxy). We no longer install pi-rtk-optimizer
 # (the auto-rewrite pi extension) — see wiki/tools/pruning-and-compaction.md for
 # the failure-mode analysis. The rtk binary itself is kept around so commands
@@ -41,28 +43,9 @@ fi
 # Verify installation
 pi --version
 
-# Install plugin stack
-# Context/token management: pi-context-prune (conversation-level pruning with
-# retrievable originals) replaced pi-rtk-optimizer (rtk auto-rewrite wrapper)
-# on 2026-05-10. See wiki/tools/pruning-and-compaction.md for rationale.
-pi install npm:pi-context-prune
-pi install npm:pi-schedule-prompt
-pi install npm:pi-boomerang
-pi install npm:pi-web-access
-pi install npm:pi-smart-fetch
-pi install npm:@the-forge-flow/camoufox-pi@0.2.1
-pi install npm:pi-code-previews
-# Task management: use lhl's fork for prompt-queued execution and batch creation.
-# Remove the legacy upstream package first so setup does not leave duplicate entries.
-pi remove npm:@tintinweb/pi-tasks >/dev/null 2>&1 || true
-pi install https://github.com/lhl/pi-tasks
-pi install npm:pi-multiloop
-pi install npm:@lhl/pi-vertex
-pi install npm:@sting8k/pi-vcc
-
-pi install npm:pi-codex-status
-pi install https://github.com/lhl/pi-multicodex
-pi install npm:pi-skill-dollar
+# Install/sync canonical plugin stack. pi-packages.json is the source of truth;
+# --prune removes local/dev/legacy package entries before installing/updating it.
+"$SCRIPT_DIR/tools/pi-sync.sh" --prune
 
 # pi-context-prune: enable the extension and use the recommended `agent-message`
 # prune trigger (batches one prune per user→final-agent-message span, much
@@ -103,10 +86,6 @@ JSON
 else
   echo "Preserving existing $PI_VCC_CONFIG (edit manually if needed)"
 fi
-
-# My UI
-pi install https://github.com/lhl/pi-zentui
-
 
 # install camoufox
 # camoufox-js depends on better-sqlite3 (native addon). Prebuilt binaries may
