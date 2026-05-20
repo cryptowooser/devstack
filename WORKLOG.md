@@ -1166,3 +1166,19 @@ Append-only session log. Each entry records what was done, why, and what's next.
 
 **Next:**
 - Push the new commits so other machines can `git pull --ff-only` and run `./tools/pi-sync.sh --prune`.
+
+## 2026-05-20 — Prepared pi-vertex 1.1.9 model update
+
+**What:** Updated the `projects/pi-vertex` submodule with current Vertex model metadata before publishing a new `@lhl/pi-vertex` version.
+
+- Checked the upstream `ssweens/pi-packages` monorepo at `/tmp/ssweens-pi-packages` for post-fork pi-vertex updates.
+- Added `gemini-3.5-flash`, xAI Grok MaaS models, Gemma 4 26B A4B IT, and Claude regional pricing support to `projects/pi-vertex`.
+- Fixed default Gemini reasoning behavior so Gemini 3/3.5 keep native defaults while Gemini 2.5 gets a healthy default thinking budget.
+- Bumped `@lhl/pi-vertex` to `1.1.9`, updated package docs/changelog/test coverage, and committed the submodule change as `f7b1a46 feat: add Gemini 3.5 Flash`.
+
+**Decisions:**
+- Included the relevant upstream monorepo updates rather than only adding Gemini 3.5 Flash, because the upstream had compatible model metadata and pricing fixes.
+- Did not publish npm from this session; the package is verified and ready for `npm publish` after review/push.
+
+**Next:**
+- Push `lhl/pi-vertex` commit `f7b1a46`, publish `@lhl/pi-vertex@1.1.9`, then run `./tools/pi-sync.sh --prune` so dev machines update the installed extension.
