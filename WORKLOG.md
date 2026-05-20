@@ -1182,3 +1182,19 @@ Append-only session log. Each entry records what was done, why, and what's next.
 
 **Next:**
 - Push `lhl/pi-vertex` commit `f7b1a46`, publish `@lhl/pi-vertex@1.1.9`, then run `./tools/pi-sync.sh --prune` so dev machines update the installed extension.
+
+## 2026-05-20 — Pushed pi-vertex 1.1.9 and created GitHub release
+
+**What:** Published the pi-vertex code/release artifacts for the Gemini 3.5 Flash update, but npm publish is blocked by local npm auth/permission.
+
+- Re-ran `npm run check`, `npm run build`, `npm test`, and `npm pack --dry-run` in `projects/pi-vertex`.
+- Pushed `lhl/pi-vertex` commit `f7b1a46` to `main` and pushed tag `v1.1.9`.
+- Created GitHub release `@lhl/pi-vertex v1.1.9`: https://github.com/lhl/pi-vertex/releases/tag/v1.1.9
+- Attempted `npm publish --access public`; npm returned `E404 Not Found - PUT https://registry.npmjs.org/@lhl%2fpi-vertex` / no permission, and `npm whoami` returns `E401` on this machine.
+
+**Decisions:**
+- Completed GitHub push/release despite npm auth being blocked so the source release is available and tagged.
+- Leave npm publish as a manual follow-up requiring npm login or an npm token with permission to publish under `@lhl`.
+
+**Next:**
+- Authenticate npm (`npm login` or configure `NPM_TOKEN`) with permission for `@lhl/pi-vertex`, then run `cd projects/pi-vertex && npm publish --access public`.
