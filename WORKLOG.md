@@ -1250,3 +1250,21 @@ Append-only session log. Each entry records what was done, why, and what's next.
 
 **Next:**
 - Push the rebased `main` branch after review.
+
+## 2026-05-22 — Published pi-continue-after-compaction
+
+**What:** Published the compaction watchdog extension and switched devstack to install it from GitHub.
+
+- Confirmed `/home/lhl/pi-continue-after-compaction` was a standalone local git repo with no remote and was not checked into devstack.
+- Added public-repo metadata: `repository` in `package.json`, GitHub install docs in `README.md`, `.gitignore`, and `LICENSE`.
+- Created the public GitHub repo `https://github.com/lhl/pi-continue-after-compaction` and pushed `main`.
+- Updated `pi-packages.json` from `/home/lhl/pi-continue-after-compaction` to `https://github.com/lhl/pi-continue-after-compaction`.
+- Removed the local checkout preflight from `pi-setup.sh`; kept the config bootstrap for `~/.pi/agent/continue-after-compaction.json`.
+- Updated `README.md`, `wiki/tools/pi-agent.md`, `wiki/index.md`, and `wiki/log.md` to document the GitHub-sourced package.
+
+**Decisions:**
+- Use the GitHub URL as the canonical pi package source so fresh machines install the latest repository version without requiring a local checkout.
+- Keep `/home/lhl/pi-continue-after-compaction` as the development checkout, not as the devstack install source.
+
+**Next:**
+- Push devstack `main` and the new GitHub extension repo is already published.

@@ -63,9 +63,9 @@
       "note": "Algorithmic context compaction override."
     },
     {
-      "source": "/home/lhl/pi-continue-after-compaction",
+      "source": "https://github.com/lhl/pi-continue-after-compaction",
       "category": "context-management",
-      "note": "Local auto-threshold compaction continue watchdog."
+      "note": "Auto-threshold compaction continue watchdog."
     },
     {
       "source": "npm:pi-codex-status",

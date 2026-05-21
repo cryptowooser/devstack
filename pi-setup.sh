@@ -43,14 +43,6 @@ fi
 # Verify installation
 pi --version
 
-# The canonical manifest includes this local standalone checkout. Fail early with
-# a clear message instead of letting pi-sync's package install fail later.
-PI_CONTINUE_AFTER_COMPACTION_DIR="$HOME/pi-continue-after-compaction"
-if [ ! -d "$PI_CONTINUE_AFTER_COMPACTION_DIR" ]; then
-  echo "Missing $PI_CONTINUE_AFTER_COMPACTION_DIR; clone or create the standalone checkout before running pi-setup.sh" >&2
-  exit 1
-fi
-
 # Install/sync canonical plugin stack. pi-packages.json is the source of truth;
 # --prune removes local/dev/legacy package entries before installing/updating it.
 "$SCRIPT_DIR/tools/pi-sync.sh" --prune

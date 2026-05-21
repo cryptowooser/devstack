@@ -1,5 +1,12 @@
 # Wiki Log
 
+## [2026-05-22] update | pi-agent — published pi-continue-after-compaction
+- Published `pi-continue-after-compaction` as the public GitHub repo `https://github.com/lhl/pi-continue-after-compaction`.
+- Switched the canonical package manifest from the local `/home/lhl/pi-continue-after-compaction` checkout to the GitHub source.
+- Updated `pi-setup.sh` to rely on manifest sync without the local checkout preflight, while keeping the config bootstrap for `~/.pi/agent/continue-after-compaction.json`.
+- Pages updated: `wiki/tools/pi-agent.md`, `wiki/index.md`.
+- Repo changes in same logical unit: `pi-packages.json` source update, `pi-setup.sh` preflight removal, and `README.md` Context Management link update.
+
 ## [2026-05-20] update | pi-agent — canonical package manifest and sync script
 - Added `pi-packages.json` as the canonical pi extension manifest and `tools/pi-sync.sh --prune` as the reconciliation path for stale machines, local path installs, and evaluation packages.
 - Updated `pi-setup.sh` to call the sync script so new and existing machines share the same package workflow.
