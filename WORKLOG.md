@@ -1234,3 +1234,19 @@ Append-only session log. Each entry records what was done, why, and what's next.
 
 **Next:**
 - Consider an upstream Pi PR to expose `reason` and `willRetry` on `session_before_compact` / `session_compact`, which would let this extension drop the private-method reason monkeypatch.
+
+## 2026-05-22 — Resolved pull rebase conflicts
+
+**What:** Resolved the `git pull --rebase` conflicts and replayed the local Pi plugin-stack commits onto `origin/main`.
+
+- Preserved the upstream canonical `pi-packages.json` / `tools/pi-sync.sh --prune` workflow.
+- Reworked the local `pi-goal` and `pi-continue-after-compaction` changes to install through `pi-packages.json` instead of restoring the old hand-written plugin install list.
+- Kept the wiki/index/log and `wiki/tools/pi-agent.md` updates aligned with the resolved manifest state.
+- Verified conflict markers were gone, shell syntax was valid, `pi-packages.json` parsed, `tools/pi-sync.sh --dry-run --prune --no-update` produced the expected plan, and the `pi-continue-after-compaction` tests passed.
+
+**Decisions:**
+- Treat the canonical manifest as the source of truth after the rebase; `pi-setup.sh` only preflights the local watchdog checkout and bootstraps its config.
+- Use `/home/lhl/pi-continue-after-compaction` as the manifest source so `pi-sync` can compare and install the package without relying on shell tilde expansion.
+
+**Next:**
+- Push the rebased `main` branch after review.
