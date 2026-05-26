@@ -58,7 +58,7 @@ if [ -f "$PI_NPM_DIR/package.json" ]; then
     cd "$PI_NPM_DIR"
     npm pkg set \
       "overrides.@mozilla/readability=0.6.0" \
-      "overrides.uuid=11.1.1"
+      "overrides.gaxios.uuid=11.1.1"
     npm install --omit=dev
   )
 else

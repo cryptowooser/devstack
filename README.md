@@ -20,7 +20,7 @@ The canonical extension list lives in [`pi-packages.json`](pi-packages.json). `p
 ./tools/pi-sync.sh --dry-run --prune --no-update
 ```
 
-After extension sync, `pi-setup.sh` reapplies npm audit overrides in `~/.pi/agent/npm` for `@mozilla/readability@0.6.0` and `uuid@11.1.1`. These keep the pi extension tree on patched transitive versions until upstream packages update their dependency ranges. Check the active tree with:
+After extension sync, `pi-setup.sh` reapplies npm audit overrides in `~/.pi/agent/npm` for `@mozilla/readability@0.6.0` and `gaxios`'s nested `uuid@11.1.1`. These keep the pi extension tree on patched transitive versions until upstream packages update their dependency ranges. Check the active tree with:
 
 ```bash
 cd ~/.pi/agent/npm
