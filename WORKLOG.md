@@ -4,6 +4,21 @@ Append-only session log. Each entry records what was done, why, and what's next.
 
 ---
 
+## 2026-05-26 — Added pi npm audit overrides
+
+**What:** Made `pi-setup.sh` reapply npm security overrides for pi-managed extension dependencies.
+
+- Added an override step after `tools/pi-sync.sh --prune` so `~/.pi/agent/npm` pins `@mozilla/readability` to `0.6.0` and `uuid` to `11.1.1`.
+- Documented the audit check in `README.md`.
+- Updated `wiki/tools/pi-agent.md` and prepended `wiki/log.md` with the dependency hygiene note.
+
+**Decisions:**
+- Use npm `overrides` rather than switching plugin sources because the vulnerable paths are transitive dependency ranges inside otherwise canonical packages.
+- Keep the overrides temporary and local to pi's generated extension workspace until upstream `pi-web-access` / `@lhl/pi-vertex` dependency ranges catch up.
+
+**Next:**
+- Re-run `cd ~/.pi/agent/npm && npm audit --omit=dev` after setup or `pi update --extensions`.
+
 ## 2026-05-12 — Added supply chain security wiki page
 
 **What:** Created a practices wiki page for package supply-chain security and recorded the Python secure-default wrappers added to fish.
