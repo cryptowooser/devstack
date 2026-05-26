@@ -1,5 +1,12 @@
 # Wiki Log
 
+## [2026-05-26] update | pi-agent — scoped uuid audit override
+- Narrowed the pi setup npm audit override from a broad `uuid` pin to `gaxios`'s nested `uuid=11.1.1` path.
+- Reapplied the scoped override in the live pi extension workspace `~/.pi/agent/npm`; `@mariozechner/pi-coding-agent` keeps its resolved `uuid@14.0.0`.
+- Verification: `cd ~/.pi/agent/npm && npm audit --omit=dev` reported zero vulnerabilities.
+- Pages updated: `wiki/tools/pi-agent.md`.
+- Repo changes in same logical unit: `pi-setup.sh`, `README.md`, and `WORKLOG.md`.
+
 ## [2026-05-26] update | pi-agent — npm audit overrides for extension deps
 - Added setup-time npm overrides in `pi-setup.sh` for the pi-managed extension workspace `~/.pi/agent/npm`.
 - Current overrides pin `@mozilla/readability` to `0.6.0` for `pi-web-access` and `uuid` to `11.1.1` for the older Google auth stack under `@lhl/pi-vertex`.

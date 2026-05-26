@@ -4,6 +4,20 @@ Append-only session log. Each entry records what was done, why, and what's next.
 
 ---
 
+## 2026-05-26 — Scoped pi npm audit uuid override
+
+**What:** Narrowed the pi npm audit override so only `gaxios`'s vulnerable `uuid` dependency is pinned.
+
+- Changed `pi-setup.sh` from a global `uuid` override to `overrides.gaxios.uuid=11.1.1`.
+- Updated README and wiki text to describe the scoped override.
+- Reapplied the scoped override in `~/.pi/agent/npm` and regenerated its lockfile.
+
+**Decisions:**
+- Avoid a broad `uuid` override because `@mariozechner/pi-coding-agent` already resolved to `uuid@14.0.0`; only the `gaxios` path needed intervention.
+
+**Next:**
+- Remove the override after the upstream Google auth dependency path resolves to a patched `uuid` without local overrides.
+
 ## 2026-05-26 — Added pi npm audit overrides
 
 **What:** Made `pi-setup.sh` reapply npm security overrides for pi-managed extension dependencies.
