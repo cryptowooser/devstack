@@ -1268,3 +1268,20 @@ Append-only session log. Each entry records what was done, why, and what's next.
 
 **Next:**
 - Push devstack `main` and the new GitHub extension repo is already published.
+
+## 2026-05-26 — Checked pip package age gate
+
+**What:** Verified the active Python `pip` configuration for the seven-day package freshness gate.
+
+- Checked `pip`, `pip3`, and `python -m pip` on PATH; all resolve to `/home/aomori/miniforge3` and run pip 26.1.1.
+- Checked all `pip` executables under `/home/aomori/miniforge3`; all installed environments run pip 26.1.1.
+- Confirmed `/home/aomori/.config/pip/pip.conf` sets `uploaded-prior-to = P7D` globally, with `require-hashes = true` and `only-binary = :all:`.
+- Confirmed the base and named conda environment `pip.conf` files also set `uploaded-prior-to = P7D` where present; the environment without a site config inherits the user config.
+- Confirmed pip 26.1.1 documents `P7D` as a duration meaning packages uploaded at least seven days ago, effective for indexes that provide upload-time metadata.
+
+**Decisions:**
+- Treat the pip age gate as active for normal pip/PyPI-style installs; note that it can still be bypassed by explicit overrides, isolated mode, non-index installs, or indexes without upload-time metadata.
+- Leave the stale fish-wrapper documentation untouched in this verification-only check.
+
+**Next:**
+- If desired, update `wiki/practices/supply-chain-security.md` to replace the old fish-wrapper note with the current pip config state.
